@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
 import Home from './components/Home'
 import CountryDetail from './components/CountryDetail'
+
 import './App.css'
 
 function App() {
@@ -17,9 +18,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<Home countriesArray={countriesArray}/>}/>
-          <Route path="/:id" element={<CountryDetail />}/>
+        <Route path="/"element={<Layout />}>
+          <Route index element={<Home countriesArray={countriesArray}/>}/>
+          <Route path=":id" element={<CountryDetail />}/>
         </Route>
       </Routes>
     </BrowserRouter>
