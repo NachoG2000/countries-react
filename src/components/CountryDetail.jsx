@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { DarkModeContext } from './contexts/DarkModeContext'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useLocation } from 'react-router-dom'
 
 import back from '../assets/back.svg'
 import backWhite from '../assets/backWhite.svg'
@@ -11,10 +11,9 @@ function CountryDetail() {
   const [isLoading, setIsLoading] = useState(true)
   const { darkMode } = useContext(DarkModeContext)
   const params = useParams()
+  const location = useLocation()
 
   const borderElements = borderArray.map(item => <Link key={item} to={`/${item}`}><button className={`${darkMode ? "bg-[#2E3742] text-white" : "bg-white"} py-2 px-4 rounded-md`}>{item}</button></Link>)
-  
-  console.log(countryInfo)
   
   useEffect(() => {
     setIsLoading(true)
@@ -35,9 +34,13 @@ function CountryDetail() {
   return (
       <div className={`${darkMode ? 'bg-[#232C35] text-white' : 'bg-[#F5F5F5]'} min-h-[100vh]`}>
         <div className={`flex`}>
-          <button className={`flex items-center justify-around rounded-lg mt-6 gap-1 mx-4 sm:mx-10 py-4 px-8 ${darkMode ? 'bg-[#2E3742]' : 'bg-white'}`}>
-            <img src={darkMode ? backWhite : back} alt="" className="h-6" />
-            Back
+          <button className={`flex items-center justify-around rounded-lg mt-6 mx-4 sm:mx-10 ${darkMode ? 'bg-[#2E3742]' : 'bg-white'}`}>
+          <Link to={location.state && location.state.search ? `..?${location.state.search}` : ".."} relative='path'>
+            <div className='flex items-center justify-around gap-2 py-4 px-8'>
+              <img src={darkMode ? backWhite : back} alt="" className="h-6" />
+              Back
+            </div>
+          </Link>
           </button>
         </div>
         <div className="flex flex-col sm:flex-row justify-center mt-10 gap-x-10 mx-4 sm:mx-10">

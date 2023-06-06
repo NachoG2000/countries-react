@@ -14,16 +14,18 @@ function App() {
       .then(res => res.json())
       .then(data => setCountriesArray(data))
   }, [])
-  
+
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/"element={<Layout />}>
-          <Route index element={<Home countriesArray={countriesArray}/>}/>
-          <Route path=":id" element={<CountryDetail />}/>
-        </Route>
-      </Routes>
-    </BrowserRouter>
+<BrowserRouter>
+  <Routes>
+    <Route path="/" element={<Layout />}>
+      <Route index element={<Home countriesArray={countriesArray} />} />
+      <Route path=":id" element={<CountryDetail />} />
+    </Route>
+    {/* <Route path="*" element={<h1>Page not found!</h1>} /> */}
+  </Routes>
+</BrowserRouter>
+
   )
 }
 
