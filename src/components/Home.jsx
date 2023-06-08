@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { DarkModeContext } from './contexts/DarkModeContext'
 import CountryCard from './CountryCard'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useLoaderData } from 'react-router-dom'
 
 import search from '../assets/search.svg'
 import searchWhite from '../assets/searchWhite.svg'
@@ -13,6 +13,22 @@ function Home(props) {
     const [isFilterMenuDisplayed, setIsFilterMenuDisplayed] = useState(false)
     const [searchParams, setSearchParams] = useSearchParams()
     const [searchInput, setSearchInput] = useState(searchParams.get('name') || "")
+    const [countriesArray, setCountriesArray] = useState([])
+
+    useEffect(() => {
+      fetch("https://restcountries.com/v3.1/all")
+        .then(res => res.json())
+        .then(data => setCountriesArray(data))
+    }, [])
+    
+    useEffect(() => {
+        if(searchParams.get('region') === "All"){
+            setSearchParams('')
+        }
+        if(!searchParams.get('name')){
+            setSearchInput("")
+        }
+    }, [searchParams])
 
     function handleFilterChange(key, value) {
         setIsFilterMenuDisplayed(false)
@@ -31,37 +47,28 @@ function Home(props) {
     }
     function handleKeyDown(event){
         if (event.keyCode === 13) {
-            console.log("hola")
             searchInput === "" ? handleFilterChange("name", null) : handleFilterChange("name", searchInput)
         }
     }
-
-    useEffect(() => {
-        if(searchParams.get('region') === "All"){
-            setSearchParams('')
-        }
-        if(!searchParams.get('name')){
-            setSearchInput("")
-        }
-    }, [searchParams])
     
-    const displayedCountriesElements = (!searchParams.get('region') || searchParams.get('region') === "All") && !searchParams.get('name')
-    ? props.countriesArray
-    : props.countriesArray.filter(country => {
-        if (searchParams.get('region') && searchParams.get('name')) {
-          return (
-            country.region === searchParams.get('region') &&
-            country.name.common.toLowerCase().includes(searchParams.get('name').toLowerCase())
-          );
-        } else if (!searchParams.get('region')) {
-          return country.name.common.toLowerCase().includes(searchParams.get('name').toLowerCase());
-        } else if (!searchParams.get('name')) {
-          return country.region === searchParams.get('region');
-        }
-      });
-  
-
-    const countriesElements = displayedCountriesElements.map(country => country.cca2 === "AQ" || country.cca2 === "CN" ? "" : (
+    const displayedCountriesElements = countriesArray ? (
+        (!searchParams.get('region') || searchParams.get('region') === "All") && !searchParams.get('name')
+          ? countriesArray
+          : countriesArray.filter(country => {
+              if (searchParams.get('region') && searchParams.get('name')) {
+                return (
+                  country.region === searchParams.get('region') &&
+                  country.name.common.toLowerCase().includes(searchParams.get('name').toLowerCase())
+                );
+              } else if (!searchParams.get('region')) {
+                return country.name.common.toLowerCase().includes(searchParams.get('name').toLowerCase());
+              } else if (!searchParams.get('name')) {
+                return country.region === searchParams.get('region');
+              }
+            })
+      ) : [];
+      
+      const countriesElements = displayedCountriesElements.map(country => country.cca2 === "AQ" || country.cca2 === "CN" ? "" : (
         <CountryCard
           key={country.name.common}
           id={country.name.common}
@@ -72,7 +79,8 @@ function Home(props) {
           image={country.flags.png}
           search={searchParams.toString()}
         />
-      ));   
+      ));
+      
 
   return (
     <div className={`${darkMode ? "bg-[#232C35] text-white" : "bg-[#F5F5F5]"} mt-0 min-h-screen`}>
@@ -101,10 +109,16 @@ function Home(props) {
                 </div>
             </div>
         </div>
-        <div className='flex justify-start items-center mt-6 mx-10'>
-            <h3 className='underline' onClick={() => setSearchParams("")}>Clear filters</h3>
-        </div>
-        <div className='flex flex-wrap items-center justify-center mt-6 sm:mx-10'>
+        {
+            searchParams.toString() !== ""
+            ? 
+            <div className='flex justify-start items-center mt-4 mx-14'>
+                <h3 className='underline cursor-pointer' onClick={() => setSearchParams("")}>Clear filters</h3>
+            </div>
+            :
+            ""
+        }
+        <div className='flex flex-wrap items-center justify-center mt-6 lg:mx-10'>
             {countriesElements}
         </div>
     </div>
