@@ -5,11 +5,11 @@ import { Link } from 'react-router-dom'
 function CountryCard(props) {
     const { darkMode } = useContext(DarkModeContext)
   return (
-    <div className={`w-60 ${darkMode ? "bg-[#2E3742]" : "bg-white"} rounded-lg m-4 h-[320px]`}>
+    <div className={`${darkMode ? "bg-[#2E3742]" : "bg-white"} rounded-lg m-2 lg:m-4 w-[320px] min-[672px]:h-[360px] md:w-60 md:h-[320px]`}>
         <Link to={`/${props.id}`} state={{search: props.search}}>
-            <img src={props.image} alt="flag" className='rounded-t-lg h-[45%] w-full' />
+            <img src={props.image} alt="flag" className='rounded-t-lg min-[672px]:h-[50%] w-full' />
             <div className='p-4 flex flex-col justify-center'>
-                <h2 className='font-bold text-xl mb-2'>{props.name}</h2>
+                <h2 className='font-bold text-3xl md:text-xl mb-2 object-contain'>{props.name}</h2>
                 <div>
                     <div className='flex gap-1'>
                         <h3 className='font-bold'>Population:</h3>

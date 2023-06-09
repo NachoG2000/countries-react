@@ -19,7 +19,10 @@ function Home() {
     const [isFilterMenuDisplayed, setIsFilterMenuDisplayed] = useState(false)
     const [searchParams, setSearchParams] = useSearchParams()
     const [searchInput, setSearchInput] = useState(searchParams.get('name') || "")
+    const [elementsMultiplier, setElementsMultiplier] = useState(1)
     const countriesArray = useLoaderData()
+
+    console.log(elementsMultiplier)
     
     useEffect(() => {
         if(searchParams.get('region') === "All"){
@@ -27,6 +30,9 @@ function Home() {
         }
         if(!searchParams.get('name')){
             setSearchInput("")
+        }
+        if(searchParams.size === 0){
+          setElementsMultiplier(1)
         }
     }, [searchParams])
 
@@ -66,9 +72,9 @@ function Home() {
                 return country.region === searchParams.get('region');
               }
             })
-      );
+      ).slice(0, elementsMultiplier <= 1 ? elementsMultiplier * 52 : elementsMultiplier * 50 + 2)
       
-      const countriesElements = displayedCountriesElements.map(country => country.cca2 === "AQ" || country.cca2 === "CN" ? "" : (
+      const countriesElements = displayedCountriesElements.map(country => country.cca2 === "AQ" || country.cca2 === "CN" ? null : (
         <CountryCard
           key={country.name.common}
           id={country.name.common}
@@ -80,10 +86,10 @@ function Home() {
           search={searchParams.toString()}
         />
       ));
-      
+        console.log(countriesElements)
 
   return (
-    <div className={`${darkMode ? "bg-[#232C35] text-white" : "bg-[#F5F5F5]"} mt-0 min-h-screen`}>
+    <div className={`${darkMode ? "bg-[#232C35] text-white" : "bg-[#F5F5F5]"} mt-0 min-h-screen overflow-x-hidden lg:overflow-x-visible`}>
         <div className={`flex flex-wrap justify-between`}>
             <div className={`flex items-center mt-6 ml-10 p-4 gap-4 rounded-lg ${darkMode ? "bg-[#2E3742]" : "bg-white"}`}>
                 <img src={darkMode ? searchWhite : search} alt="search" className='h-6 cursor-pointer' onClick={searchInput === "" ? () => handleFilterChange("name", null) : () => handleFilterChange("name", searchInput)}/>
@@ -118,9 +124,21 @@ function Home() {
             :
             ""
         }
-        <div className='flex flex-wrap items-center justify-center mt-6 lg:mx-10'>
+        <div className='flex flex-wrap items-center justify-center mt-6 lg:mx-10 max-w-full'>
             {countriesElements}
         </div>
+        {
+          countriesElements.length > elementsMultiplier * 50 ?
+          <div className='flex items-center justify-center'>
+            <button className={`flex items-center justify-around rounded-lg my-6 mx-4 sm:mx-10 ${darkMode ? 'bg-[#2E3742]' : 'bg-white'}`}
+                    onClick={() => setElementsMultiplier(prevState => prevState + 1)}
+            >
+              <div className='flex items-center justify-around gap-2 py-4 px-8'>
+                Load more
+              </div>
+            </button>
+          </div> : ""
+        }
     </div>
   )
 }
