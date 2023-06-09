@@ -8,18 +8,18 @@ import searchWhite from '../assets/searchWhite.svg'
 import expand from '../assets/expand.svg'
 import expandWhite from '../assets/expandWhite.svg'
 
-function Home(props) {
+export function loader(){
+  return fetch("https://restcountries.com/v3.1/all")
+          .then(res => res.json())
+          .then(data => data)
+}
+
+function Home() {
     const { darkMode } = useContext(DarkModeContext)
     const [isFilterMenuDisplayed, setIsFilterMenuDisplayed] = useState(false)
     const [searchParams, setSearchParams] = useSearchParams()
     const [searchInput, setSearchInput] = useState(searchParams.get('name') || "")
-    const [countriesArray, setCountriesArray] = useState([])
-
-    useEffect(() => {
-      fetch("https://restcountries.com/v3.1/all")
-        .then(res => res.json())
-        .then(data => setCountriesArray(data))
-    }, [])
+    const countriesArray = useLoaderData()
     
     useEffect(() => {
         if(searchParams.get('region') === "All"){
@@ -51,7 +51,7 @@ function Home(props) {
         }
     }
     
-    const displayedCountriesElements = countriesArray ? (
+    const displayedCountriesElements = (
         (!searchParams.get('region') || searchParams.get('region') === "All") && !searchParams.get('name')
           ? countriesArray
           : countriesArray.filter(country => {
@@ -66,7 +66,7 @@ function Home(props) {
                 return country.region === searchParams.get('region');
               }
             })
-      ) : [];
+      );
       
       const countriesElements = displayedCountriesElements.map(country => country.cca2 === "AQ" || country.cca2 === "CN" ? "" : (
         <CountryCard
