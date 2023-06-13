@@ -10,7 +10,7 @@ function Layout() {
   }
 
   return (
-    <div className={isMenuDisplayed ? "fixed" : ""}>
+    <div className={isMenuDisplayed ? "fixed w-full" : ""}>
         <Header isMenuDisplayed={isMenuDisplayed} toggleMenu={toggleMenu}/>    
         <Outlet />
     </div>

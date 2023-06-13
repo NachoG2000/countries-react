@@ -11,8 +11,6 @@ function Error() {
 
     const error = useRouteError()
 
-    console.log(error.message)
-
     useEffect(() => {
         window.scrollTo(0, 0);
       }, []);
