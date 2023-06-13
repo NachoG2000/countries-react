@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import React, {useContext, useEffect} from 'react'
 import { useLocation, useRouteError, Link } from 'react-router-dom'
 import { DarkModeContext } from './contexts/DarkModeContext'
 
@@ -11,7 +11,11 @@ function Error() {
 
     const error = useRouteError()
 
-    console.log(error.status)
+    console.log(error.message)
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+      }, []);
 
     return (
         <div className={`${darkMode ? 'bg-[#232C35] text-white' : 'bg-[#F5F5F5]'} min-h-[100vh]`}>
@@ -27,7 +31,9 @@ function Error() {
             </div>
             <div className='my-6 mx-4 sm:mx-10 lg:w-[60%]'>
                 <h2 className='text-2xl md:text-3xl font-bold mb-4'>Oops! We couldn't find the country you're searching for. Please double-check the spelling or try another country.</h2>
-                <h4>Error: {error.status} ({error.statusText})</h4>
+                {error && error.status && error.statusText && (
+                    <h4>Error: {error.status} ({error.statusText})</h4> 
+                )}
             </div>
         </div>
     )

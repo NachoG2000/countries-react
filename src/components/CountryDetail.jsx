@@ -1,6 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { DarkModeContext } from './contexts/DarkModeContext'
 import { Link, useLocation, useLoaderData } from 'react-router-dom'
+import Error from './Error'
 
 import back from '../assets/back.svg'
 import backWhite from '../assets/backWhite.svg'
@@ -16,6 +17,13 @@ export function loader(params) {
             status: response.status
           }
         } 
+        else if(country.cca2 === "AQ" || country.cca2 === "CN"){
+          throw {
+            message: "This country is not available", 
+            statusText: response.statusText,
+            status: response.status
+          }
+        }
         return response.json()})
     .then((data) => {
       const countryInfo = data[0];
@@ -45,6 +53,8 @@ function CountryDetail() {
 
   const borderElements = borderArray.map(item => <Link key={item} to={`/${item}`}><button className={`${darkMode ? "bg-[#2E3742] text-white" : "bg-white"} py-2 px-4 rounded-md`}>{item}</button></Link>)
   
+
+  console.log(countryInfo)
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -95,30 +105,3 @@ function CountryDetail() {
 }
 
 export default CountryDetail
-
-
-  // useEffect(() => {
-  //   setBorderArray([]);
-  
-  //   const fetchData = async () => {
-  //       fetch(
-  //         `https://restcountries.com/v3.1/name/${params.id}`
-  //       );
-  //       const data = await response.json();
-  //       setCountryInfo(data[0]);
-  //       if (data[0].borders) {
-  //         data[0].borders.map((border) =>
-  //           fetch(`https://restcountries.com/v3.1/alpha/${border}`)
-  //             .then((res) => res.json())
-  //             .then((data2) =>
-  //               setBorderArray((prevState) => [
-  //                 ...prevState,
-  //                 data2[0].name.common,
-  //               ])
-  //             )
-  //         );
-  //       }
-  //   };
-  
-  //   fetchData();
-  // }, [params.id]);

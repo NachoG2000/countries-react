@@ -72,9 +72,10 @@ function Home() {
                 return country.region === searchParams.get('region');
               }
             })
-      ).slice(0, elementsMultiplier <= 1 ? elementsMultiplier * 52 : elementsMultiplier * 50 + 2)
+      ).slice(0, elementsMultiplier * 50)
       
-      const countriesElements = displayedCountriesElements.map(country => country.cca2 === "AQ" || country.cca2 === "CN" ? null : (
+      const countriesElements = displayedCountriesElements
+      .map(country => (
         <CountryCard
           key={country.name.common}
           id={country.name.common}
@@ -86,8 +87,7 @@ function Home() {
           search={searchParams.toString()}
         />
       ));
-        console.log(countriesElements)
-
+    
   return (
     <div className={`${darkMode ? "bg-[#232C35] text-white" : "bg-[#F5F5F5]"} mt-0 min-h-screen overflow-x-hidden lg:overflow-x-visible`}>
         <div className={`flex flex-wrap justify-between`}>
@@ -128,7 +128,7 @@ function Home() {
             {countriesElements}
         </div>
         {
-          countriesElements.length > elementsMultiplier * 50 ?
+          countriesElements.length >= elementsMultiplier * 50 ?
           <div className='flex items-center justify-center'>
             <button className={`flex items-center justify-around rounded-lg my-6 mx-4 sm:mx-10 ${darkMode ? 'bg-[#2E3742]' : 'bg-white'}`}
                     onClick={() => setElementsMultiplier(prevState => prevState + 1)}
